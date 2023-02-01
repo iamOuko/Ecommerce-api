@@ -58,3 +58,32 @@ class ProductViewset(viewsets.ViewSet):
                 status=status.HTTP_200_OK
             )
 
+    
+    def update(self, request, pk=None):
+        serialized_data = ProductSerializer(data=request.data)
+        if not serialized_data.is_valid():
+                return Response(
+                    {'details':serialized_data.errors, 'code': 400},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+        product = Product.objects.filter(pk=pk)
+            
+        if product:
+                product.update(**serialized_data.data)
+                return Response(
+                    {'details':'Product updated', 'code':200},
+                    status=status.HTTP_200_OK
+                )
+        return Response(
+                {'details':'Product to be updated does not exist', 'code':400},
+                status=status.HTTP_200_OK
+            )
+
+    def delete(self, request, pk=None):
+        Product.objects.filter(pk=pk).delete()
+        return Response(
+            {'details':'Succesfully deleted product.', 'code':200},
+            status=status.HTTP_200_OK
+        )
+
