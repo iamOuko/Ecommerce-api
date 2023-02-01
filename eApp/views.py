@@ -5,7 +5,7 @@ from eApp.serializers import ProductSerializer, OrderSerializer
 from rest_framework.response import Response
 
 # Create your views here.
-class ProductViewset(viewsets.Viewset):
+class ProductViewset(viewsets.ViewSet):
     def list(self, request):
         queryset = Product.objects.all()
 
