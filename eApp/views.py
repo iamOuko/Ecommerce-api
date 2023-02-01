@@ -22,3 +22,39 @@ class ProductViewset(viewsets.ViewSet):
             {'detail': serialized_data.data, 'code':200},
             status=status.HTTP_200_OK
         )
+
+    def create(self, request):
+        # get data from request payload
+        # pass through serializer
+        serialized_data = ProductSerializer(data=request.data)
+
+        if not serialized_data.is_valid():
+            return Response(
+                {'detail': serialized_data.errors, 'code':400},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # store data in database
+        serialized_data.save()
+
+        # return response
+        return Response(
+            {'detail': 'Product added succesfully', 'code': 200},
+            status=status.HTTP_201_CREATED
+        )
+
+    def retrieve(self, request, pk=None):
+        try:
+            queryset = Product.objects.get(pk=pk)
+            serialized_data = ProductSerializer(queryset)
+            return Response(
+                    {'details':serialized_data.data, 'code':200},
+                    status=status.HTTP_200_OK
+                )
+
+        except Product.DoesNotExist:
+            return Response(
+                {'details':'Product Does Not Exist', 'code': 400},
+                status=status.HTTP_200_OK
+            )
+
